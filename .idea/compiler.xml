@@ -10,6 +10,7 @@
         <module name="lyapigateway" />
         <module name="lyitemservice" />
         <module name="lyiteminterface" />
+        <module name="lycommon" />
       </profile>
     </annotationProcessing>
   </component>
@@ -17,6 +18,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="leyou" options="-parameters" />
       <module name="lyapigateway" options="-parameters" />
+      <module name="lycommon" options="-parameters" />
       <module name="lyitem" options="-parameters" />
       <module name="lyiteminterface" options="-parameters" />
       <module name="lyitemservice" options="-parameters" />
