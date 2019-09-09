@@ -2,7 +2,7 @@ server:
   port: 10010
 spring:
   application:
-    name: api-gateway
+    name: ly-api-gateway
 eureka:
   client:
     service-url:
@@ -12,7 +12,7 @@ zuul:
   prefix: /api # 添加路由前缀
   retryable: true
   routes:
-    item-service: /item/**
+    ly-item-service: /item/**
 
 ribbon:
     ConnectTimeout: 250 # 连接超时时间(ms)

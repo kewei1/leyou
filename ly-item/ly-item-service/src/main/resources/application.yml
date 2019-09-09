@@ -2,7 +2,7 @@ server:
   port: 8081
 spring:
   application:
-    name: item-service
+    name: ly-item-service
   datasource:
     url: jdbc:mysql://localhost:3306/yun6
     username: root
@@ -20,8 +20,3 @@ eureka:
     prefer-ip-address: true
     ip-address: 127.0.0.1
     instance-id: ${spring.application.name}:${server.port}
-zuul:
-  prefix: /api # 添加路由前缀
-  retryable: true
-  routes:
-    item-service: /item/** # 将商品微服务映射到/item/**
