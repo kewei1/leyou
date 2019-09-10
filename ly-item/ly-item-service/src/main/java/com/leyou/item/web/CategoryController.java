@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("item")
+@RequestMapping("category")
 public class CategoryController{
 
     @Autowired
@@ -25,7 +25,7 @@ public class CategoryController{
     public ResponseEntity<List<Category>> queryCategoryListByParentId(@RequestParam(value = "pid", defaultValue = "0") Long pid) {
         try {
             if (pid == null || pid.longValue() < 0){
-                // pid为null或者小于等于0，响应400
+                // pid为null或者pid长度小于等于0，响应400
                 throw new LyException(ExceptionEnum.PRICE_CANNOT_BE_NULL);
             }
             // 执行查询操作
@@ -37,7 +37,6 @@ public class CategoryController{
                 throw new LyException(ExceptionEnum.CATEGORY_NOT_FOUND);
             }
             // 响应200
-            System.out.println(categoryList);
             return ResponseEntity.ok(categoryList);
         } catch (Exception e) {
             e.printStackTrace();
