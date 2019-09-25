@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="lyregistry" />
-        <module name="lyapigateway" />
-        <module name="lyitemservice" />
-        <module name="lyiteminterface" />
         <module name="lycommon" />
+        <module name="lyapigateway" />
+        <module name="lyregistry" />
+        <module name="lyupload" />
+        <module name="lyiteminterface" />
+        <module name="lyitemservice" />
       </profile>
     </annotationProcessing>
   </component>
@@ -23,6 +24,7 @@
       <module name="lyiteminterface" options="-parameters" />
       <module name="lyitemservice" options="-parameters" />
       <module name="lyregistry" options="-parameters" />
+      <module name="lyupload" options="-parameters" />
     </option>
   </component>
 </project>
