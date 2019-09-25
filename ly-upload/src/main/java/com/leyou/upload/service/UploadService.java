@@ -1,6 +1,6 @@
-package com.leyou.upload.web;
+package com.leyou.upload.service;
 
-import com.leyou.upload.service.UploadController;
+import com.leyou.upload.web.UploadController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

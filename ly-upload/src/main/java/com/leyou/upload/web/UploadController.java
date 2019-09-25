@@ -1,7 +1,7 @@
-package com.leyou.upload.service;
+package com.leyou.upload.web;
 
 
-import com.leyou.upload.web.UploadService;
+import com.leyou.upload.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

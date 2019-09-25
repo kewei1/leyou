@@ -13,6 +13,11 @@ zuul:
   retryable: true
   routes:
     ly-item-service: /item/**
+    upload-service: /**
+
+  ignored-services:
+        - upload-service # 忽略upload-service服务
+
 
 ribbon:
     ConnectTimeout: 250 # 连接超时时间(ms)
