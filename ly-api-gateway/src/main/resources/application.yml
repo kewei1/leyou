@@ -13,7 +13,11 @@ zuul:
   retryable: true
   routes:
     ly-item-service: /item/**
-    upload-service: /**
+    upload-service:
+      path: /upload/**
+      serviceId: upload-service
+      strip-prefix: false
+
 
   ignored-services:
         - upload-service # 忽略upload-service服务
