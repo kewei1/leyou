@@ -29,7 +29,6 @@ public class UploadService {
     FastFileStorageClient storageClient;
 
 
-
     public String upload(MultipartFile file) {
         try {
             // 1、图片信息校验
