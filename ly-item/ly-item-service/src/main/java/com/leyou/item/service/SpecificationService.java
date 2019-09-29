@@ -33,9 +33,11 @@ public class SpecificationService {
     }
 
 
-    public List<Specparm> queryByGId(Long gid) {
+    public List<Specparm> queryParmList(Long gid,Long cid ,Boolean searching) {
         Specparm grop = new Specparm();
         grop.setGroupId(gid);
+        grop.setCid(cid);
+        grop.setSearching(searching);
         List<Specparm> se = specParamMapper.select(grop);
         if (CollectionUtils.isEmpty(se)){
             throw new LyException(ExceptionEnum.CATEGORY_NOT_FOUND);

@@ -20,6 +20,11 @@ public class SpecificationController {
     @Autowired
     private SpecificationService specificationService;
 
+    /**
+     *
+     * @param cid
+     * @return ResponseEntity<List<Specification>>
+     */
     @GetMapping("groups/{cid}")
     public ResponseEntity<List<Specification>> querySpecificationByCategoryCid(@PathVariable("cid") Long cid){
 
@@ -27,11 +32,22 @@ public class SpecificationController {
         return ResponseEntity.ok(specificationService.queryById(cid));
     }
 
+    /**
+     *
+     * @param gid
+     * @param id
+     * @param searching
+     * @return ResponseEntity<List<Specparm>>
+     */
     @GetMapping("params")
-    public ResponseEntity<List<Specparm>> querySpecificationByCategoryGId(@RequestParam("gid") Long gid){
+    public ResponseEntity<List<Specparm>> querySpecificationByCategoryGId(
+            @RequestParam(value = "gid" ,required = false) Long gid ,
+            @RequestParam(value = "cid" ,required = false) Long cid  ,
+            @RequestParam(value = "searching" ,required = false) Boolean searching ){
 
-
-        return ResponseEntity.ok(specificationService.queryByGId(gid));
+        return ResponseEntity.ok(specificationService.queryParmList(gid,cid,searching));
     }
+
+
 }
 
