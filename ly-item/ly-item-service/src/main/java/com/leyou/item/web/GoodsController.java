@@ -2,15 +2,16 @@ package com.leyou.item.web;
 
 import com.leyou.common.pojo.PageResult;
 import com.leyou.item.po.SpuBo;
+import com.leyou.item.pojo.Sku;
+import com.leyou.item.pojo.SpuDetail;
 import com.leyou.item.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 public class GoodsController {
@@ -43,7 +44,7 @@ public class GoodsController {
      * @param spu
      * @return
      */
-    @PostMapping
+    @PostMapping(value = "goods")
     public ResponseEntity<Void> saveGoods(@RequestBody SpuBo spu) {
         try {
             this.goodsService.save(spu);
@@ -53,4 +54,38 @@ public class GoodsController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/spu/detail/{id}")
+    public ResponseEntity<SpuDetail> querySpuDetailById(@PathVariable("id") Long id) {
+        SpuDetail detail = this.goodsService.querySpuDetailById(id);
+        if (detail == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(detail);
+    }
+
+
+    @GetMapping("sku/list")
+    public ResponseEntity<List<Sku>> querySkuBySpuId(@RequestParam("id") Long id) {
+        List<Sku> skus = this.goodsService.querySkuBySpuId(id);
+        if (skus == null || skus.size() == 0) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(skus);
+    }
+
+
+    @PutMapping
+    public ResponseEntity<Void> updateGoods(@RequestBody SpuBo spu) {
+        try {
+            this.goodsService.update(spu);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
 }
