@@ -3,19 +3,21 @@ package com.leyou.item.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.leyou.common.pojo.PageResult;
-import com.leyou.item.mapper.BrandMapper;
-import com.leyou.item.mapper.SpuDetailMapper;
-import com.leyou.item.mapper.SpuMapper;
+import com.leyou.item.mapper.*;
 import com.leyou.item.po.SpuBo;
 import com.leyou.item.pojo.Brand;
+import com.leyou.item.pojo.Sku;
 import com.leyou.item.pojo.Spu;
+import com.leyou.item.pojo.Stock;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,13 +30,19 @@ public class GoodsService {
     @Autowired
     private SpuMapper spuMapper;
 
-
     @Autowired
-    private CategoryService categoryService;
+    private SkuMapper skuMapper;
+
 
     @Autowired
     private BrandMapper brandMapper;
 
+    @Autowired
+    private StockMapper stockMapper;
+
+
+    @Autowired
+    private CategoryService categoryService;
 
 
 
@@ -76,6 +84,46 @@ public class GoodsService {
 
         return new PageResult<>(pageInfo.getTotal(), list);
     }
+
+    @Transactional
+    public void save(SpuBo spu) {
+        // 保存spu
+        spu.setSaleable(true);
+        spu.setValid(true);
+        spu.setCreateTime(new Date());
+        spu.setLastUpdateTime(spu.getCreateTime());
+        this.spuMapper.insert(spu);
+        // 保存spu详情
+        spu.getSpuDetail().setSpuId(spu.getId());
+        this.spuDetailMapper.insert(spu.getSpuDetail());
+
+        // 保存sku和库存信息
+        saveSkuAndStock(spu.getSkus(), spu.getId());
     }
+
+    private void saveSkuAndStock(List<Sku> skus1, Long spuId) {
+        for (Sku sku : skus1) {
+            if (!sku.getEnable()) {
+                continue;
+            }
+            // 保存sku
+            sku.setSpuId(spuId);
+            // 默认不参与任何促销
+            sku.setCreateTime(new Date());
+            sku.setLastUpdateTime(sku.getCreateTime());
+            this.skuMapper.insert(sku);
+
+            // 保存库存信息
+            Stock stock = new Stock();
+            stock.setSkuId(sku.getId());
+
+            stock.setStock( sku.getStock());
+
+            this.stockMapper.insert(stock);
+        }
+    }
+
+
+}
 
 
