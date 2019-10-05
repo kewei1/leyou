@@ -1,4 +1,4 @@
-package com.leyou.search.pojo;
+package com.leyou.search;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;

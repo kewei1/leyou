@@ -1,5 +1,6 @@
 package com.leyou.item.api;
 
+
 import com.leyou.common.pojo.PageResult;
 import com.leyou.item.po.SpuBo;
 import com.leyou.item.pojo.Sku;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@RequestMapping("/goods")
-public interface GoodsApi {
+@RequestMapping("goods")
+public interface GoodsApi{
 
     /**
      * 分页查询商品
@@ -27,7 +28,7 @@ public interface GoodsApi {
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "rows", defaultValue = "5") Integer rows,
             @RequestParam(value = "saleable", defaultValue = "true") Boolean saleable,
-            @RequestParam(value = "key", required = false) String key);
+            @RequestParam(value = "key", required = false) String key) ;
 
     /**
      * 根据spu商品id查询详情
