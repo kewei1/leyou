@@ -59,4 +59,12 @@ import java.util.List;
         return this.brandMapper.queryByCategoryId(cid);
 
     }
+
+
+    public Brand queryBrandById(Long id) {
+        Brand brand = new Brand();
+        brand.setId(id);
+
+        return this.brandMapper.selectOne(brand);
+    }
 }
