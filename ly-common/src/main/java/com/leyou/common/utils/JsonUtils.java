@@ -4,10 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.istack.internal.Nullable;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -77,7 +80,19 @@ public class JsonUtils {
         }
     }
 
-
+    public static Map<String, String> ToMap(String jsonString) {
+        JSONObject jsonObject = JSONObject.fromObject(jsonString);
+        Map<String, String> map = new HashMap<String, String>();
+        for (Iterator<?> iter = jsonObject.keys(); iter.hasNext();) {
+            String key = (String) iter.next();
+            String value=jsonObject.getString(key);
+            if(org.apache.commons.lang.StringUtils.isNotBlank(value)&&!"null".equalsIgnoreCase(value))
+            {
+                map.put(key, jsonObject.getString(key));
+            }
+        }
+        return map;
+    }
 
     }
 
