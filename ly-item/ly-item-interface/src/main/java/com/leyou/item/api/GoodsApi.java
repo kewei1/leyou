@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @RequestMapping("goods")
+
 public interface GoodsApi{
 
     /**
@@ -24,10 +25,10 @@ public interface GoodsApi{
      * @return
      */
     @GetMapping("/spu/page")
-    PageResult<SpuBo> querySpuByPage(
+    public PageResult<SpuBo> querySpuByPage(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "rows", defaultValue = "5") Integer rows,
-            @RequestParam(value = "saleable", defaultValue = "true") Boolean saleable,
+            @RequestParam(value = "saleable" ,required = false) Boolean saleable,
             @RequestParam(value = "key", required = false) String key) ;
 
     /**
