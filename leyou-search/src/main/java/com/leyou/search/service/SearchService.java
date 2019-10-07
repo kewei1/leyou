@@ -13,6 +13,7 @@ import com.leyou.search.client.GoodsClient;
 import com.leyou.search.client.SpecificationClient;
 import com.leyou.search.pojo.Goods;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -98,6 +99,9 @@ public class SearchService {
             //判断是否是通用规格
             if (parm.getGeneric()){
                 value =genericSpecs.get(parm.getId()) ;
+                if (parm.getNumeric()){
+                    value = chooseSegment(value.toString(), parm);
+                }
             }else {
                 searchSpec.get(parm.getId());
             }
@@ -122,6 +126,33 @@ public class SearchService {
         goods.setSubTitle(spu.getSubTitle());
         return goods;
     }
+    private String chooseSegment(String value, Specparm p) {
+        double val = NumberUtils.toDouble(value);
+        String result = "其它";
+        // 保存数值段
+        for (String segment : p.getSegments().split(",")) {
+            String[] segs = segment.split("-");
+            // 获取数值范围
+            double begin = NumberUtils.toDouble(segs[0]);
+            double end = Double.MAX_VALUE;
+            if(segs.length == 2){
+                end = NumberUtils.toDouble(segs[1]);
+            }
+            // 判断是否在范围内
+            if(val >= begin && val < end){
+                if(segs.length == 1){
+                    result = segs[0] + p.getUnit() + "以上";
+                }else if(begin == 0){
+                    result = segs[1] + p.getUnit() + "以下";
+                }else{
+                    result = segment + p.getUnit();
+                }
+                break;
+            }
+        }
+        return result;
+    }
+
 
 }
 
