@@ -60,7 +60,7 @@ public class BrandController {
     }
 
 
-    @GetMapping("id")
+    @GetMapping("id/{id}")
     public ResponseEntity<Brand> queryBrandById(@PathVariable("id") Long id){
 
         return ResponseEntity.ok(brandService.queryBrandById(id));

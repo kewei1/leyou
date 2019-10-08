@@ -43,9 +43,6 @@ public class GoodsRepositoryTest {
     }
     @Test
     public void test01(){
-        int page = 1;
-        int rows = 100;
-        //goodsClient.querySpuByPage(page, rows, true, null);
         brandClient.queryBrandById(1912l);
     }
 

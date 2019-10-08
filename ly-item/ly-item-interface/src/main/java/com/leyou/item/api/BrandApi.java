@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("brand")
 public interface BrandApi {
 
-    @GetMapping("id")
+    @GetMapping("id/{id}")
    Brand queryBrandById(@PathVariable("id") Long id);
 }
