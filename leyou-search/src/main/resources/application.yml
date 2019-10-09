@@ -5,6 +5,9 @@ spring:
   application:
     name: search-service
 
+  jackson:
+    default-property-inclusion: non_null # 配置json处理时忽略空值
+
   data:
     elasticsearch:
       cluster-name: elasticsearch
@@ -14,10 +17,13 @@ spring:
     url: jdbc:mysql://localhost:3306/yun6
     username: root
     password: 116184
+
 eureka:
+
   client:
     service-url:
       defaultZone: http://127.0.0.1:10086/eureka
+
   instance:
     lease-renewal-interval-in-seconds: 5 # 每隔5秒发送一次心跳
     lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期

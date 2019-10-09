@@ -191,7 +191,7 @@ public class SearchService {
 
         // 3、分页
         // 准备分页参数
-        int page = request.getPage();
+        int page = request.getPage() - 1;
         int size = request.getSize();
         queryBuilder.withPageable(PageRequest.of(page - 1, size));
 
