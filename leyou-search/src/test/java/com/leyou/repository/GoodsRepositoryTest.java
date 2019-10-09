@@ -41,9 +41,10 @@ public class GoodsRepositoryTest {
         template.createIndex(Goods.class);
         template.putMapping(Goods.class);
     }
+
     @Test
     public void test01(){
-        brandClient.queryBrandById(1912l);
+        brandClient.queryBrandById(192l);
     }
 
     @Test

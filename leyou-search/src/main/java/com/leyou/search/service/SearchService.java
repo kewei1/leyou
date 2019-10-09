@@ -44,7 +44,7 @@ public class SearchService {
     public Goods buildGoods(Spu spu) throws IOException {
 
         // 查询商品分类名称
-        List<String> names = this.categoryClient.queryNameByIds(Arrays.asList(spu.getCid1(), spu.getCid2(), spu.getCid3()));
+        List<String> names = categoryClient.queryNameByIds(Arrays.asList((Long) spu.getCid1(), (Long)spu.getCid2(), (Long)spu.getCid3()));
 
         //查询品牌
         Brand brand = brandClient.queryBrandById(spu.getBrandId());
@@ -94,16 +94,21 @@ public class SearchService {
         for (Specparm parm:params) {
             //规格名称
             String key =parm.getName();
+            //规格的值
             Object value = "";
 
             //判断是否是通用规格
             if (parm.getGeneric()){
-                value =genericSpecs.get(parm.getId()) ;
+
+                value =genericSpecs.get(parm.getId().toString()) ;
+
                 if (parm.getNumeric()){
+
                     value = chooseSegment(value.toString(), parm);
+
                 }
             }else {
-                searchSpec.get(parm.getId());
+                searchSpec.get(parm.getId().toString());
             }
             //存入Map
             searchSpec.put(key,value);
