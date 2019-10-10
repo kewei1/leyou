@@ -201,11 +201,18 @@ public class SearchService {
 
         // 5. 解析结果
         Long total = result.getTotalElements();
+        int totalpag =  result.getTotalPages();
+        // totalpag始终返回①  PageRequest.of( page , size )中size为20
+        //211行代码为暂时方案
+
+
 
         List<Goods> goodsList = result.getContent();
+        Long totalpage = new Long((long)(total + 20 -1) / 20);
 
+        System.out.println(totalpag);
         // 封装结果并返回
-        return new PageResult<>( total , (total + 20 -1) / 20, goodsList);
+        return new PageResult<>( total , totalpage, goodsList);
     }
 
 
