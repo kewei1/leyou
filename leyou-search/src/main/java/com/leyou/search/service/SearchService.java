@@ -191,19 +191,21 @@ public class SearchService {
 
         // 3、分页
         // 准备分页参数
-        int page = request.getPage() - 1;
+        int page = request.getPage() ;
         int size = request.getSize();
-        queryBuilder.withPageable(PageRequest.of(page - 1, size));
+        System.out.println(size);
+        queryBuilder.withPageable(PageRequest.of( page , size ));
 
         // 4、查询，获取结果
         Page<Goods> result = this.goodsRepository.search(queryBuilder.build());
+
         // 5. 解析结果
         Long total = result.getTotalElements();
-        int totalpag =  result.getTotalPages();
+
         List<Goods> goodsList = result.getContent();
-        Long totalpage = new Long((long)totalpag);
+
         // 封装结果并返回
-        return new PageResult<>( total , totalpage , goodsList);
+        return new PageResult<>( total , (total + 20 -1) / 20, goodsList);
     }
 
 
