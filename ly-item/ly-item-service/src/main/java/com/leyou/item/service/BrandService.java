@@ -67,4 +67,11 @@ import java.util.List;
 
         return this.brandMapper.selectOne(brand);
     }
+
+
+    public List<Brand> queryBrandByIds(List<Long> ids) {
+        return this.brandMapper.selectByIdList(ids);
+    }
+
+
 }

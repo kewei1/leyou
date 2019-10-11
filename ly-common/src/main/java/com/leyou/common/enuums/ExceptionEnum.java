@@ -15,7 +15,9 @@ public enum  ExceptionEnum {
     INTERNAL_SERVER_ERROR(500,"服务器异常"),
     BRAND_NOT_FOUND(404,"没有查到品牌"),
     GOODS_SKU_NOT_FOUND (404,"没有查到SKU"),
-    SPEC_parm_NOT_FOUND(404,"没有查到SPEC")
+    SPEC_parm_NOT_FOUND(404,"没有查到SPEC"),
+    ABNORMAL_BRAND_AGGREGATION(404,"品牌聚合出现异常"),
+    ABNORMAL_CATEGORY_AGGREGATION(404,"分类聚合出现异常")
     ;
 
 

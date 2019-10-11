@@ -15,13 +15,18 @@ import com.leyou.search.client.GoodsClient;
 import com.leyou.search.client.SpecificationClient;
 import com.leyou.search.pojo.Goods;
 import com.leyou.search.pojo.SearchRequest;
+import com.leyou.search.vo.SearchResult;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
@@ -173,48 +178,115 @@ public class SearchService {
     private GoodsRepository goodsRepository;
 
     public PageResult<Goods> search(SearchRequest request) {
-        String key = request.getKey();
         // 判断是否有搜索条件，如果没有，直接返回null。不允许搜索全部商品
-        if (StringUtils.isBlank(key)) {
+        if (StringUtils.isBlank(request.getKey())) {
             return null;
         }
 
-        // 构建查询条件
+        // 1、构建查询条件
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 
-        // 1、对key进行全文检索查询
-        queryBuilder.withQuery(QueryBuilders.matchQuery("all", key).operator(Operator.AND));
-
-        // 2、通过sourceFilter设置返回的结果字段,我们只需要id、skus、subTitle
+        // 1.1、基本查询
+        queryBuilder.withQuery(QueryBuilders.matchQuery("all", request.getKey()));
+        // 通过sourceFilter设置返回的结果字段,我们只需要id、skus、subTitle
         queryBuilder.withSourceFilter(new FetchSourceFilter(
                 new String[]{"id", "skus", "subTitle"}, null));
 
-        // 3、分页
-        // 准备分页参数
-        int page = request.getPage() ;
-        int size = request.getSize();
-        System.out.println(size);
-        queryBuilder.withPageable(PageRequest.of( page , size ));
-
-        // 4、查询，获取结果
-        Page<Goods> result = this.goodsRepository.search(queryBuilder.build());
-
-        // 5. 解析结果
-        Long total = result.getTotalElements();
-        int totalpag =  result.getTotalPages();
-        // totalpag始终返回①  PageRequest.of( page , size )中size为20
-        //211行代码为暂时方案
+        // 1.2.分页排序
+        searchWithPageAndSort(queryBuilder,request);
 
 
+        // 1.3、聚合
+        String categoryAggName = "category"; // 商品分类聚合名称
+        String brandAggName = "brand"; // 品牌聚合名称
+        // 对商品分类进行聚合
+        queryBuilder.addAggregation(AggregationBuilders.terms(categoryAggName).field("cid3"));
+        // 对品牌进行聚合
+        queryBuilder.addAggregation(AggregationBuilders.terms(brandAggName).field("brandId"));
 
-        List<Goods> goodsList = result.getContent();
-        Long totalpage = new Long((long)(total + 20 -1) / 20);
+        // 2、查询，获取结果
+        AggregatedPage<Goods> pageInfo = (AggregatedPage<Goods>) this.goodsRepository.search(queryBuilder.build());
 
-        System.out.println(totalpag);
-        // 封装结果并返回
-        return new PageResult<>( total , totalpage, goodsList);
+        // 3、解析查询结果
+        // 3.1、分页信息
+        Long total = pageInfo.getTotalElements();
+        int totalPage = (total.intValue() + request.getSize() - 1) / request.getSize();
+        // 3.2、商品分类的聚合结果
+        List<Category> categories =
+                getCategoryAggResult(pageInfo.getAggregation(categoryAggName));
+        // 3.3、品牌的聚合结果
+        List<Brand> brands = getBrandAggResult(pageInfo.getAggregation(brandAggName));
+        Long totalpage = new Long((long) (pageInfo.getTotalElements() + 20 - 1) / 20);
+        // 返回结果
+        System.out.println(brands);
+        System.out.println(categories);
+        System.out.println(pageInfo.getContent());
+        SearchResult searchResult = new SearchResult();
+        searchResult.setItems(pageInfo.getContent());
+        searchResult.setBrands(brands);
+        searchResult.setCategories(categories);
+        searchResult.setTotal(pageInfo.getTotalElements());
+        searchResult.setTotalPage(totalpage);
+        //return new SearchResult(pageInfo.getTotalElements(), totalpage, pageInfo.getContent(), categories, brands);
+        return  searchResult ;
     }
 
+    // 解析品牌聚合结果
+    private List<Brand> getBrandAggResult(Aggregation aggregation) {
+        try {
+            LongTerms brandAgg = (LongTerms) aggregation;
+            List<Long> bids = new ArrayList<>();
+            for (LongTerms.Bucket bucket : brandAgg.getBuckets()) {
+                bids.add(bucket.getKeyAsNumber().longValue());
+            }
+            // 根据id查询品牌
+            return this.brandClient.queryBrandByIds(bids);
+        } catch (Exception e) {
+            throw new LyException(ExceptionEnum.ABNORMAL_BRAND_AGGREGATION);
+
+        }
+    }
+
+    // 解析商品分类聚合结果
+    private List<Category> getCategoryAggResult(Aggregation aggregation) {
+        try {
+            List<Category> categories = new ArrayList<>();
+            LongTerms categoryAgg = (LongTerms) aggregation;
+            List<Long> cids = new ArrayList<>();
+            for (LongTerms.Bucket bucket : categoryAgg.getBuckets()) {
+                cids.add(bucket.getKeyAsNumber().longValue());
+            }
+            // 根据id查询分类名称
+            List<String> names = this.categoryClient.queryNameByIds(cids);
+
+            for (int i = 0; i < names.size(); i++) {
+                Category c = new Category();
+                c.setId(cids.get(i));
+                c.setName(names.get(i));
+                categories.add(c);
+            }
+            return categories;
+        } catch (Exception e) {
+            throw new LyException(ExceptionEnum.ABNORMAL_CATEGORY_AGGREGATION);
+        }
+    }
+
+    // 构建基本查询条件
+    private void searchWithPageAndSort(NativeSearchQueryBuilder queryBuilder, SearchRequest request) {
+        // 准备分页参数
+        int page = request.getPage();
+        int size = request.getSize();
+
+        // 1、分页
+        queryBuilder.withPageable(PageRequest.of(page - 1, size));
+        // 2、排序
+        String sortBy = request.getSortBy();
+        Boolean desc = request.getDescending();
+        if (StringUtils.isNotBlank(sortBy)) {
+            // 如果不为空，则进行排序
+            queryBuilder.withSort(SortBuilders.fieldSort(sortBy).order(desc ? SortOrder.DESC : SortOrder.ASC));
+        }
+    }
 
 
 
