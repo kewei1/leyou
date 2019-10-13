@@ -199,11 +199,8 @@ public class SearchService {
         // 1、构建查询条件
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 
-        QueryBuilder basicQuery = buildBasicQueryWithFilter(request);
+        QueryBuilder basicQuery = buildBasicQuery(request);
         queryBuilder.withQuery(basicQuery);
-
-
-
 
         // 通过sourceFilter设置返回的结果字段,我们只需要id、skus、subTitle
         queryBuilder.withSourceFilter(new FetchSourceFilter(
@@ -352,30 +349,6 @@ public class SearchService {
         return queryBuilder;
     }
 
-
-    // 构建基本过滤查询条件
-    private QueryBuilder buildBasicQueryWithFilter(SearchRequest request) {
-        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-        // 基本查询条件
-        queryBuilder.must(QueryBuilders.matchQuery("all", request.getKey()).operator(Operator.AND));
-        // 过滤条件构建器
-        BoolQueryBuilder filterQueryBuilder = QueryBuilders.boolQuery();
-        // 整理过滤条件
-        Map<String, String> filter = request.getFilter();
-        for (Map.Entry<String, String> entry : filter.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            // 商品分类和品牌要特殊处理
-            if (key != "cid3" && key != "brandId") {
-                key = "specs." + key + ".keyword";
-            }
-            // 字符串类型，进行term查询
-            filterQueryBuilder.must(QueryBuilders.termQuery(key, value));
-        }
-        // 添加过滤条件
-        queryBuilder.filter(filterQueryBuilder);
-        return queryBuilder;
-    }
 
 
 
