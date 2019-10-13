@@ -8,6 +8,7 @@ public class PageResult<T> {
     private List<T> items;// 当前页数据
 
     public PageResult() {
+
     }
 
     public PageResult(Long total, List<T> items) {

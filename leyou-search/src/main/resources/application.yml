@@ -1,7 +1,6 @@
 server:
   port: 8083
 spring:
-
   application:
     name: search-service
 
@@ -19,10 +18,11 @@ spring:
     password: 116184
 
 eureka:
-
   client:
     service-url:
       defaultZone: http://127.0.0.1:10086/eureka
+    #register-with-eureka: false
+    #fetch-registry: false
 
   instance:
     lease-renewal-interval-in-seconds: 5 # 每隔5秒发送一次心跳

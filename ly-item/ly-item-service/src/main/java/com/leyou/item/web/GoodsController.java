@@ -25,6 +25,7 @@ public class GoodsController {
      * @param key
      * @return
      */
+
     @GetMapping("/spu/page")
     public ResponseEntity<PageResult<SpuBo>> querySpuByPage(
             @RequestParam(value = "page", defaultValue = "1") Integer page,

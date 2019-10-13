@@ -42,10 +42,7 @@ public class GoodsRepositoryTest {
         template.putMapping(Goods.class);
     }
 
-    @Test
-    public void test01(){
-        brandClient.queryBrandById(192l);
-    }
+
 
     @Test
     public void loadData(){
@@ -54,7 +51,7 @@ public class GoodsRepositoryTest {
         int size = 0;
         do {
             // 查询分页数据
-            PageResult<SpuBo> result = this.goodsClient.querySpuByPage(page, rows, true, null);
+            PageResult<SpuBo> result = this.goodsClient.querySpuByPage(page,rows, true, null);
 
             List<SpuBo> spus = result.getItems();
             size = spus.size();

@@ -17,7 +17,8 @@ public enum  ExceptionEnum {
     GOODS_SKU_NOT_FOUND (404,"没有查到SKU"),
     SPEC_parm_NOT_FOUND(404,"没有查到SPEC"),
     ABNORMAL_BRAND_AGGREGATION(404,"品牌聚合出现异常"),
-    ABNORMAL_CATEGORY_AGGREGATION(404,"分类聚合出现异常")
+    ABNORMAL_CATEGORY_AGGREGATION(404,"分类聚合出现异常"),
+    GAUGE_AGGREGATE_ANOMALY(500,"规格聚合出现异常"),
     ;
 
 

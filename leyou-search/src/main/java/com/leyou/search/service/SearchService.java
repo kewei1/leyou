@@ -18,14 +18,20 @@ import com.leyou.search.pojo.SearchRequest;
 import com.leyou.search.vo.SearchResult;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -50,8 +56,14 @@ public class SearchService {
     @Autowired
     private BrandClient brandClient;
 
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+
+
 
     private ObjectMapper mapper = new ObjectMapper();
+
+    private MatchQueryBuilder basicQuery =null;
 
 
     public Goods buildGoods(Spu spu) throws IOException {
@@ -122,7 +134,7 @@ public class SearchService {
 
                 }
             } else {
-                searchSpec.get(parm.getId().toString());
+                specialSpec.get(parm.getId().toString());
             }
             //存入Map
             searchSpec.put(key, value);
@@ -178,6 +190,8 @@ public class SearchService {
     private GoodsRepository goodsRepository;
 
     public PageResult<Goods> search(SearchRequest request) {
+        String key = request.getKey();
+
         // 判断是否有搜索条件，如果没有，直接返回null。不允许搜索全部商品
         if (StringUtils.isBlank(request.getKey())) {
             return null;
@@ -186,6 +200,7 @@ public class SearchService {
         // 1、构建查询条件
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 
+
         // 1.1、基本查询
         queryBuilder.withQuery(QueryBuilders.matchQuery("all", request.getKey()));
         // 通过sourceFilter设置返回的结果字段,我们只需要id、skus、subTitle
@@ -193,7 +208,7 @@ public class SearchService {
                 new String[]{"id", "skus", "subTitle"}, null));
 
         // 1.2.分页排序
-        searchWithPageAndSort(queryBuilder,request);
+        searchWithPageAndSort(queryBuilder,request,key);
 
 
         // 1.3、聚合
@@ -216,6 +231,18 @@ public class SearchService {
                 getCategoryAggResult(pageInfo.getAggregation(categoryAggName));
         // 3.3、品牌的聚合结果
         List<Brand> brands = getBrandAggResult(pageInfo.getAggregation(brandAggName));
+
+
+
+        // 根据商品分类判断是否需要聚合
+        List<Map<String, Object>> specs = new ArrayList<>();
+        if (categories.size() == 1) {
+            // 如果商品分类只有一个才进行聚合，并根据分类与基本查询条件聚合
+            specs = getSpec(categories.get(0).getId(), basicQuery);
+        }
+
+
+
         Long totalpage = new Long((long) (pageInfo.getTotalElements() + 20 - 1) / 20);
         // 返回结果
         System.out.println(brands);
@@ -227,9 +254,14 @@ public class SearchService {
         searchResult.setCategories(categories);
         searchResult.setTotal(pageInfo.getTotalElements());
         searchResult.setTotalPage(totalpage);
+        searchResult.setSpecs(specs);
+
+        //TODO 不知为何构造带参函数返回时失败
         //return new SearchResult(pageInfo.getTotalElements(), totalpage, pageInfo.getContent(), categories, brands);
         return  searchResult ;
     }
+
+
 
     // 解析品牌聚合结果
     private List<Brand> getBrandAggResult(Aggregation aggregation) {
@@ -272,13 +304,16 @@ public class SearchService {
     }
 
     // 构建基本查询条件
-    private void searchWithPageAndSort(NativeSearchQueryBuilder queryBuilder, SearchRequest request) {
+    private void searchWithPageAndSort(NativeSearchQueryBuilder queryBuilder, SearchRequest request ,String key) {
         // 准备分页参数
         int page = request.getPage();
         int size = request.getSize();
 
         // 1、分页
         queryBuilder.withPageable(PageRequest.of(page - 1, size));
+
+        MatchQueryBuilder basicQuery = QueryBuilders.matchQuery("all", key).operator(Operator.AND);
+
         // 2、排序
         String sortBy = request.getSortBy();
         Boolean desc = request.getDescending();
@@ -286,6 +321,54 @@ public class SearchService {
             // 如果不为空，则进行排序
             queryBuilder.withSort(SortBuilders.fieldSort(sortBy).order(desc ? SortOrder.DESC : SortOrder.ASC));
         }
+    }
+
+
+
+
+    /**
+     * 聚合出规格参数
+     *
+     * @param cid
+     * @param query
+     * @return
+     */
+    private List<Map<String, Object>> getSpec(Long cid, QueryBuilder query) {
+        try {
+            // 不管是全局参数还是sku参数，只要是搜索参数，都根据分类id查询出来
+            List<Specparm> params =this.specificationClient.querySpecificationByCategoryGId(null, cid, true);
+            List<Map<String, Object>> specs = new ArrayList<>();
+
+            NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+            queryBuilder.withQuery(query);
+
+            // 聚合规格参数
+            params.forEach(p -> {
+                String key = p.getName();
+                queryBuilder.addAggregation(AggregationBuilders.terms(key).field("specs." + key + ".keyword"));
+
+            });
+
+            // 查询
+            Map<String, Aggregation> aggs = this.elasticsearchTemplate.query(queryBuilder.build(),
+                    SearchResponse::getAggregations).asMap();
+
+            // 解析聚合结果
+            params.forEach(param -> {
+                Map<String, Object> spec = new HashMap<>();
+                String key = param.getName();
+                spec.put("k", key);
+                StringTerms terms = (StringTerms) aggs.get(key);
+                spec.put("options", terms.getBuckets().stream().map(StringTerms.Bucket::getKeyAsString));
+                specs.add(spec);
+            });
+
+            return specs;
+        } catch (Exception e) {
+            throw new LyException(ExceptionEnum.GAUGE_AGGREGATE_ANOMALY);
+
+        }
+
     }
 
 
