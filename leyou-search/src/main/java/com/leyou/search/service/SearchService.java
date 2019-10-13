@@ -19,10 +19,7 @@ import com.leyou.search.vo.SearchResult;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.Operator;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
@@ -134,7 +131,7 @@ public class SearchService {
 
                 }
             } else {
-                specialSpec.get(parm.getId().toString());
+                value = specialSpec.get(parm.getId().toString());
             }
             //存入Map
             searchSpec.put(key, value);
@@ -197,17 +194,22 @@ public class SearchService {
             return null;
         }
 
+
+
         // 1、构建查询条件
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 
+        QueryBuilder basicQuery = buildBasicQueryWithFilter(request);
+        queryBuilder.withQuery(basicQuery);
 
-        // 1.1、基本查询
-        queryBuilder.withQuery(QueryBuilders.matchQuery("all", request.getKey()));
+
+
+
         // 通过sourceFilter设置返回的结果字段,我们只需要id、skus、subTitle
         queryBuilder.withSourceFilter(new FetchSourceFilter(
                 new String[]{"id", "skus", "subTitle"}, null));
 
-        // 1.2.分页排序
+        // 1.2.
         searchWithPageAndSort(queryBuilder,request,key);
 
 
@@ -312,7 +314,9 @@ public class SearchService {
         // 1、分页
         queryBuilder.withPageable(PageRequest.of(page - 1, size));
 
-        MatchQueryBuilder basicQuery = QueryBuilders.matchQuery("all", key).operator(Operator.AND);
+        QueryBuilder queryBuilder1 = buildBasicQuery(request);
+
+
 
         // 2、排序
         String sortBy = request.getSortBy();
@@ -321,6 +325,56 @@ public class SearchService {
             // 如果不为空，则进行排序
             queryBuilder.withSort(SortBuilders.fieldSort(sortBy).order(desc ? SortOrder.DESC : SortOrder.ASC));
         }
+    }
+
+
+    //过滤查询
+    private QueryBuilder buildBasicQuery(SearchRequest request) {
+        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        // 基本查询条件
+        queryBuilder.must(QueryBuilders.matchQuery("all", request.getKey()).operator(Operator.AND));
+        // 过滤条件构建器
+        BoolQueryBuilder filterQueryBuilder = QueryBuilders.boolQuery();
+        // 整理过滤条件
+        Map<String, String> filter = request.getFilter();
+        for (Map.Entry<String, String> entry : filter.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            // 商品分类和品牌要特殊处理
+            if (key != "cid3" && key != "brandId") {
+                key = "specs." + key + ".keyword";
+            }
+            // 字符串类型，进行term查询
+            filterQueryBuilder.must(QueryBuilders.termQuery(key, value));
+        }
+        // 添加过滤条件
+        queryBuilder.filter(filterQueryBuilder);
+        return queryBuilder;
+    }
+
+
+    // 构建基本过滤查询条件
+    private QueryBuilder buildBasicQueryWithFilter(SearchRequest request) {
+        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        // 基本查询条件
+        queryBuilder.must(QueryBuilders.matchQuery("all", request.getKey()).operator(Operator.AND));
+        // 过滤条件构建器
+        BoolQueryBuilder filterQueryBuilder = QueryBuilders.boolQuery();
+        // 整理过滤条件
+        Map<String, String> filter = request.getFilter();
+        for (Map.Entry<String, String> entry : filter.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            // 商品分类和品牌要特殊处理
+            if (key != "cid3" && key != "brandId") {
+                key = "specs." + key + ".keyword";
+            }
+            // 字符串类型，进行term查询
+            filterQueryBuilder.must(QueryBuilders.termQuery(key, value));
+        }
+        // 添加过滤条件
+        queryBuilder.filter(filterQueryBuilder);
+        return queryBuilder;
     }
 
 
