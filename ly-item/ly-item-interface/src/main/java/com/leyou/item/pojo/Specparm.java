@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Data
 @Table(name ="tb_spec_param")
-public class Specparm{
+public class Specparm  {
 
     @Id
     @KeySql(useGeneratedKeys = true)

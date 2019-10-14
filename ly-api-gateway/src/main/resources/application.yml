@@ -13,6 +13,7 @@ zuul:
   retryable: true
   routes:
     ly-item-service: /item/**
+    leyou-goods-web: /item/**
     search-service: /search/**
     upload-service:
       path: /upload/**

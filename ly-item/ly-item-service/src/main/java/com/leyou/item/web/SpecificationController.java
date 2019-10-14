@@ -4,6 +4,7 @@ import com.leyou.item.pojo.Specification;
 import com.leyou.item.pojo.Specparm;
 import com.leyou.item.service.SpecificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +47,18 @@ public class SpecificationController {
             @RequestParam(value = "searching" ,required = false) Boolean searching ){
 
         return ResponseEntity.ok(specificationService.queryParmList(gid,cid,searching));
+    }
+
+
+
+
+    @GetMapping("{cid}")
+    public ResponseEntity<List<Specification>> querySpecsByCid(@PathVariable("cid") Long cid){
+        List<Specification> list = this.specificationService.querySpecsByCid(cid);
+        if(list == null || list.size() == 0){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(list);
     }
 
 
