@@ -13,6 +13,17 @@
     <link rel="stylesheet" type="text/css" href="/css/pages-zoom.css" />
     <link rel="stylesheet" type="text/css" href="/css/widget-cartPanelView.css" />
 
+    <script th:inline="javascript">
+        // sku集合
+        const skus = /*[[${skus}]]*/ [];
+        const spuDetail = /*[[${spuDetail}]]*/ [];
+        // 规格参数id与name对
+        const paramMap = /*[[${params}]]*/ {};
+        // 特有规格参数集合
+        const specialSpec = JSON.parse(/*[[${spuDetail.specialSpec}]]*/ "");
+        const genericSpec = JSON.parse(/*[[${spuDetail.genericSpec}]]*/ "");
+    </script>
+
 	<style type="text/css">
 	.goods-intro-list li {
 		display: inline-block;
@@ -114,44 +125,38 @@
 			<div class="product-info">
 				<div class="fl preview-wrap">
 					<!--放大镜效果-->
-					<div class="zoom">
-						<!--默认第一个预览-->
-						<div id="preview" class="spec-preview">
-							<span class="jqzoom">
-								<img jqimg="/img/_/b1.png" src="/img/_/s1.png" width="400px" height="400px"/>
-							</span>
-						</div>
-						<!--下方的缩略图-->
-						<div class="spec-scroll">
-							<a class="prev">&lt;</a>
-							<!--左右按钮-->
-							<div class="items">
-								<ul>
-									<li><img src="/img/_/s1.png" bimg="/img/_/b1.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s2.png" bimg="/img/_/b2.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s3.png" bimg="/img/_/b3.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s1.png" bimg="/img/_/b1.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s2.png" bimg="/img/_/b2.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s3.png" bimg="/img/_/b3.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s1.png" bimg="/img/_/b1.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s2.png" bimg="/img/_/b2.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s3.png" bimg="/img/_/b3.png" onmousemove="preview(this)" /></li>
-								</ul>
-							</div>
-							<a class="next">&gt;</a>
-						</div>
-					</div>
-				</div>
+                    <div class="zoom">
+                        <!--默认第一个预览-->
+                        <div id="preview" class="spec-preview">
+      <span class="jqzoom">
+         <img :jqimg="images[0]" :src="images[0]" width="400px" height="400px"/>
+      </span>
+                        </div>
+                        <!--下方的缩略图-->
+                        <div class="spec-scroll">
+                            <a class="prev">&lt;</a>
+                            <!--左右按钮-->
+                            <div class="items">
+                                <ul>
+                                    <li v-for="(image, i) in images" :key="i">
+                                        <img :src="image" :bimg="image" onmousemove="preview(this)" />
+                                    </li>
+                                </ul>
+                            </div>
+                            <a class="next">&gt;</a>
+                        </div>
+                    </div>
+                </div>
 				<div class="fr itemInfo-wrap">
 					<div class="sku-name">
-						<h4>Apple iPhone 6s（A1700）64G玫瑰金色 移动通信电信4G手机</h4>
+                        <h4 v-text="sku.title"></h4>
 					</div>
-					<div class="news"><span>推荐选择下方[移动优惠购],手机套餐齐搞定,不用换号,每月还有花费返</span></div>
-					<div class="summary">
+                    <div class="news"><span th:utext="${spu.subTitle}"></span></div>
+                    <div class="summary">
 						<div class="summary-wrap">
 							<div class="fl title"><i>价　　格</i></div>
 							<div class="fl price">
-								<i>¥</i><em>5299.00</em><span>降价通知</span>
+                                <i>¥</i><em v-text="ly.formatPrice(sku.price)">5299.00</em><span>降价通知</span>
 							</div>
 							<div class="fr remark"><i>累计评价</i><em>612188</em></div>
 						</div>
@@ -185,56 +190,24 @@
 						</div>
 					</div>
 					<div class="clearfix choose">
-						<div id="specification" class="summary-wrap clearfix">
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>选择颜色</i>
-								</div>
-								</dt>
-								<dd>
-									<a href="javascript:;" class="selected">
-										金色<span title="点击取消选择">&nbsp;</span>
-									</a>
-								</dd>
-								<dd><a href="javascript:;">银色</a></dd>
-								<dd><a href="javascript:;">黑色</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>内存容量</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">16G<span title="点击取消选择">&nbsp;</span>
-</a></dd>
-								<dd><a href="javascript:;">64G</a></dd>
-								<dd><a href="javascript:;" class="locked">128G</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>选择版本</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">公开版<span title="点击取消选择">&nbsp;</span>
-</a></dd>
-								<dd><a href="javascript:;">移动版</a></dd>							
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>购买方式</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">官方标配<span title="点击取消选择">&nbsp;</span>
-</a></dd>
-								<dd><a href="javascript:;">移动优惠版</a></dd>	
-								<dd><a href="javascript:;"  class="locked">电信优惠版</a></dd>
-							</dl>
-						</div>
+                        <div id="specification" class="summary-wrap clearfix">
+                            <dl v-for="(v,k) in specialSpec" :key="k">
+                                <dt>
+                                    <div class="fl title">
+                                        <i>{{paramMap[k]}}</i>
+                                    </div>
+                                </dt>
+                                <dd v-for="(str,j) in v" :key="j">
+                                    <a href="javascript:;" :class="{selected: j===indexes[k]}" @click="indexes[k]=j">
+                                        {{str}}<span v-if="j===indexes[k]" title="点击取消选择">&nbsp;</span>
+                                    </a>
+                                </dd>
+                            </dl>
+                        </div>
 
-						<div class="summary-wrap">
+
+
+                        <div class="summary-wrap">
 							<div class="fl title">
 								<div class="control-group">
 									<div class="controls">
@@ -484,47 +457,34 @@
 									<li>机身内存：64GB</li>
 								</ul>
 								<!--商品详情-->
-								<div class="intro-detail">
-									<img src="/img/_/intro01.png" />
-									<img src="/img/_/intro02.png" />
-									<img src="/img/_/intro03.png" />
-								</div>
-							</div>
-							<div id="two" class="tab-pane">
-								<div class="Ptable">
-    <div class="Ptable-item">
-        <h3>主体</h3>
-        <dl>
-            <dt>品牌</dt><dd>华为（HUAWEI）</dd>
-            <dt>型号</dt><dd>CLT-AL00</dd>
-            <dt>入网型号</dt><dd>CLT-AL00</dd>
-            <dt>上市年份</dt><dd>2018年</dd>
-            <dt>上市月份</dt><dd>4月</dd>
-        </dl>
-    </div>
-    <div class="Ptable-item">
-        <h3>基本信息</h3>
-        <dl>
-            <dt>机身颜色</dt><dd>宝石蓝</dd>
-            <dt>机身长度（mm）</dt><dd>155.0 </dd>
-            <dt>机身宽度（mm）</dt><dd>73.9 </dd>
-            <dt>机身厚度（mm）</dt><dd>7.8</dd>
-            <dt>机身重量（g）</dt><dd>约180g（含电池）</dd>
-            <dt>输入方式</dt><dd>触控</dd>
-            <dt>运营商标志或内容</dt><dd>无</dd>
-            <dt>机身材质分类</dt><dd>玻璃后盖</dd>
-        </dl>
-    </div>
-</div>
-<div class="package-list">
-    <h3>包装清单</h3>
-    <p>手机X1、快速指南X1、华为SuperCharge 充电器X1、三包凭证X1、Type-C 数字耳机X1、Type-C 数据线X1、取卡针X1、TPU保护壳X1、USB Type-C转3.5mm耳机转接线X1（备注：最终以实物为准）</p>
-</div>
 
-							</div>
-							<div id="three" class="tab-pane">
-								<p>售后保障</p>
-							</div>
+                                <div class="intro-detail" th:utext="${spuDetail.description}">
+                                </div>
+
+                            </div>
+							<div id="two" class="tab-pane">
+                                <div class="Ptable">
+                                    <div class="Ptable-item" v-for="group in groups" :key="group.name">
+                                        <h3>{{group.name}}</h3>
+                                        <dl>
+                                            <!--<div v-for="p in group.params">
+                                                <dt>{{p.name}}</dt><dd>{{p.v + (p.unit || '')}}</dd>
+                                            </div>-->
+                                        </dl>
+                                    </div>
+                                </div>
+
+                                <div class="package-list">
+                                    <h3>包装清单</h3>
+                                    <p th:text="${spuDetail.packingList}"></p>
+                                </div>
+
+
+                            </div>
+                            <div id="three" class="tab-pane">
+                                <p>售后保障</p>
+                                <p th:text="${spuDetail.afterService}"></p>
+                            </div>
 							<div id="four" class="tab-pane">
 								<p>商品评价</p>
 							</div>
@@ -660,7 +620,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 </div>
 <script src="/js/vue/vue.js"></script>
 <script src="/js/axios.min.js"></script>
@@ -669,16 +629,40 @@
 <script>
     var itemVm = new Vue({
         el:"#itemApp",
-        data:{
+        data: {
+            ly,
+            skus,
+            indexes: {
+                "4": 0,
+                "12": 0,
+                "13": 0
+            },
+            paramMap,
+            specialSpec
         },
+
+        computed:{
+            sku(){
+                const index = Object.values(this.indexes).join("_");
+                return this.skus.find(s => s.indexes = index);
+            },
+            images(){
+                return this.sku.images ? this.sku.images.split(",") : [''];
+            }
+
+        },
+
         components:{
             lyTop: () => import('/js/pages/top.js')
         }
     });
+
+
 </script>
 
 <script type="text/javascript" src="/js/plugins/jquery/jquery.min.js"></script>
 <script type="text/javascript">
+
 $(function(){
 	$("#service").hover(function(){
 		$(".service").show();
@@ -692,21 +676,20 @@ $(function(){
 	});
 
 })
+</script>
+
 
 
 <script th:inline="javascript">
-const a = /*[[${groups}]]*/ [];
-const b = /*[[${params}]]*/ [];
-const c = /*[[${categories}]]*/ [];
-const d = /*[[${spu}]]*/ {};
-const e = /*[[${spuDetail}]]*/ {};
-const f = /*[[${skus}]]*/ [];
-const g = /*[[${brand}]]*/ {};
+    const a = /*[[${groups}]]*/ [];
+    const b = /*[[${params}]]*/ [];
+    const c = /*[[${categories}]]*/ [];
+    const d = /*[[${spu}]]*/ {};
+    const e = /*[[${spuDetail}]]*/ {};
+    const f = /*[[${skus}]]*/ [];
+    const g = /*[[${brand}]]*/ {};
 </script>
 
-
-
-</script>
 <script type="text/javascript" src="/js/model/cartModel.js"></script>
 <script type="text/javascript" src="/js/plugins/jquery.easing/jquery.easing.min.js"></script>
 <script type="text/javascript" src="/js/plugins/sui/sui.min.js"></script>

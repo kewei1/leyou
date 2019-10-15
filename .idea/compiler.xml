@@ -7,13 +7,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="leyou-search" />
         <module name="lyapigateway" />
         <module name="lyregistry" />
         <module name="lyupload" />
         <module name="leyou-goods-web" />
         <module name="lyiteminterface" />
         <module name="lycommon" />
+        <module name="leyou-search" />
         <module name="lyitemservice" />
       </profile>
     </annotationProcessing>
