@@ -46,11 +46,8 @@ public class GoodsRepositoryTest {
         template.putMapping(Goods.class);
     }
 
-    @Test
-    public void createIdex() {
-        //发送mq消息
-        amqpTemplate.convertAndSend("item.qqq",2323);
-    }
+
+
 
 
     @Test
