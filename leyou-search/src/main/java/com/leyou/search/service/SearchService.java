@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
-public class SearchService {
+public class SearchService{
 
     @Autowired
     private CategoryClient categoryClient;
@@ -399,6 +399,20 @@ public class SearchService {
     }
 
 
+    public void creatOrupdateIndex(Long spuId) throws IOException {
 
+        Spu spu = this.goodsClient.querySpuById(spuId);
+        // 构建商品
+        Goods goods = buildGoods(spu);
+
+        // 保存数据到索引库
+        this.goodsRepository.save(goods);
+
+    }
+
+    public void DeleteIndex(Long spuId) {
+        goodsRepository.deleteById(spuId);
+
+    }
 }
 

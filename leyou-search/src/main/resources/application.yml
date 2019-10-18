@@ -17,6 +17,14 @@ spring:
     username: root
     password: 116184
 
+  rabbitmq:
+    host: 192.168.158.131
+    username: itke
+    password: 123
+    virtual-host: /leyou
+
+
+
 eureka:
   client:
     service-url:

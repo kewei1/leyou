@@ -10,6 +10,7 @@ import com.leyou.search.pojo.Goods;
 import com.leyou.search.service.SearchService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -36,12 +37,20 @@ public class GoodsRepositoryTest {
     @Autowired
     private BrandClient brandClient;
 
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
     @Test
     public void createIndex() {
         template.createIndex(Goods.class);
         template.putMapping(Goods.class);
     }
 
+    @Test
+    public void createIdex() {
+        //发送mq消息
+        amqpTemplate.convertAndSend("item.qqq",2323);
+    }
 
 
     @Test
