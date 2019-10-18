@@ -67,7 +67,9 @@ public class GoodsService {
             map.put("skus", skus);
             map.put("brand", brands.get(0));
             map.put("categories", categories);
+
             map.put("groups", specGroups);
+
             map.put("params", paramMap);
             return map;
         } catch (Exception e) {
