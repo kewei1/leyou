@@ -8,13 +8,13 @@ spring:
   data:
     elasticsearch:
       cluster-name: elasticsearch
-      cluster-nodes: 192.168.158.133:9300
+      cluster-nodes: 192.168.254.128:9300
   datasource:
     url: jdbc:mysql://localhost:3306/yun6
     username: root
     password: 116184
   rabbitmq:
-    host: 192.168.158.131
+    host: 192.168.254.129
     username: itke
     password: 123
     virtual-host: /leyou

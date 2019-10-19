@@ -7,14 +7,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="leyou-user-service" />
         <module name="lyapigateway" />
-        <module name="lyupload" />
+        <module name="leyou-user-interface" />
         <module name="lyregistry" />
-        <module name="lycommon" />
+        <module name="lyupload" />
         <module name="leyou-goods-web" />
         <module name="lyiteminterface" />
-        <module name="lyitemservice" />
+        <module name="lycommon" />
         <module name="leyou-search" />
+        <module name="lyitemservice" />
       </profile>
     </annotationProcessing>
   </component>
@@ -23,6 +25,8 @@
       <module name="leyou" options="-parameters" />
       <module name="leyou-goods-web" options="-parameters" />
       <module name="leyou-search" options="-parameters" />
+      <module name="leyou-user-interface" options="-parameters" />
+      <module name="leyou-user-service" options="-parameters" />
       <module name="lyapigateway" options="-parameters" />
       <module name="lycommon" options="-parameters" />
       <module name="lyitem" options="-parameters" />

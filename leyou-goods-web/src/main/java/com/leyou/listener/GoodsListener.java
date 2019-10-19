@@ -36,7 +36,8 @@ public class GoodsListener {
                     value = "leyou.item.exchange",
                     ignoreDeclarationExceptions = "true",
                     type = ExchangeTypes.TOPIC),
-            key = "item.delete"))
+            key = "item.delete"
+    ))
     public void listenDelete(Long id) {
         if (id == null) {
             return;

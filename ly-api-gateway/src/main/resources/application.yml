@@ -15,6 +15,7 @@ zuul:
     ly-item-service: /item/**
     leyou-goods-web: /item/**
     search-service: /search/**
+    user-service: /user/**
     upload-service:
       path: /upload/**
       serviceId: upload-service
