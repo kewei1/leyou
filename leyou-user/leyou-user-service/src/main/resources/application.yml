@@ -10,6 +10,18 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
   redis:
     host: 192.168.254.129
+  rabbitmq:
+    host: 192.168.254.129
+    username: itke
+    password: 123
+    virtual-host: /leyou
+    template:
+      retry:
+        enabled: true
+        initial-interval: 10000ms
+        max-interval: 210000ms
+        multiplier: 2
+    publisher-confirms: true
 
 eureka:
   client:
