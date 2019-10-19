@@ -25,7 +25,7 @@ public class UserService {
             default:
                 return null;
         }
-        return this.userMapper.selectCount(record) == 0;
+        return this.userMapper.selectCount(record) == 1;
     }
 
 
