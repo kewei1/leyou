@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="leyou-user-service" />
+        <module name="leyou-sms-service" />
         <module name="lyapigateway" />
         <module name="leyou-user-interface" />
         <module name="lyregistry" />
@@ -25,6 +26,7 @@
       <module name="leyou" options="-parameters" />
       <module name="leyou-goods-web" options="-parameters" />
       <module name="leyou-search" options="-parameters" />
+      <module name="leyou-sms-service" options="-parameters" />
       <module name="leyou-user-interface" options="-parameters" />
       <module name="leyou-user-service" options="-parameters" />
       <module name="lyapigateway" options="-parameters" />
