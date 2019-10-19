@@ -23,7 +23,12 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-
+    /**
+     *
+     * @param data
+     * @param type
+     * @return Boolean
+     */
     public Boolean checkData(String data, Integer type) {
         User record = new User();
         switch (type) {
