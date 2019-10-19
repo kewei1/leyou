@@ -12,6 +12,7 @@ zuul:
   prefix: /api # 添加路由前缀
   retryable: true
   routes:
+
     ly-item-service: /item/** # 商品微服务的映射路径
     leyou-goods-web: /item/** # 详情页微服务的映射路径
     search-service: /search/**  # 搜索微服务
@@ -22,9 +23,10 @@ zuul:
       serviceId: upload-service
       strip-prefix: false
 
-
   ignored-services:
         - upload-service # 忽略upload-service服务
+  add-host-header: true #携带请求本身的头
+  sensitive-headers: #配置禁止使用的头信息，这里配置为null，否则set-cookie无效
 
 
 ribbon:
@@ -40,3 +42,21 @@ hystrix:
         isolation:
           thread:
             timeoutInMillisecond: 10000 # 熔断超时时长：10000ms
+
+ly:
+  jwt:
+    pubKeyPath: F:\\key\\rsa.pub # 公钥地址
+    cookieName: LY_TOKEN # cookie的名称
+
+
+leyou:
+  filter:
+    allowPaths:
+      - /api/auth
+      - /api/search
+      - /api/user/register
+      - /api/user/check
+      - /api/user/code
+      - /api/item
+
+
