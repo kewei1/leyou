@@ -7,19 +7,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="leyou-auth-service" />
-        <module name="leyou-user-service" />
-        <module name="leyou-sms-service" />
-        <module name="lyapigateway" />
-        <module name="leyou-user-interface" />
-        <module name="lyregistry" />
-        <module name="lyupload" />
-        <module name="leyou-goods-web" />
         <module name="lyiteminterface" />
-        <module name="lycommon" />
         <module name="leyou-search" />
-        <module name="lyitemservice" />
+        <module name="leyou-goods-web" />
+        <module name="leyou-auth-service" />
+        <module name="lycommon" />
+        <module name="leyou-user-service" />
+        <module name="lyupload" />
+        <module name="leyou-cart" />
         <module name="leyou-auth-common" />
+        <module name="leyou-sms-service" />
+        <module name="lyregistry" />
+        <module name="leyou-user-interface" />
+        <module name="lyitemservice" />
+        <module name="lyapigateway" />
       </profile>
     </annotationProcessing>
   </component>
@@ -28,6 +29,7 @@
       <module name="leyou" options="-parameters" />
       <module name="leyou-auth-common" options="-parameters" />
       <module name="leyou-auth-service" options="-parameters" />
+      <module name="leyou-cart" options="-parameters" />
       <module name="leyou-goods-web" options="-parameters" />
       <module name="leyou-search" options="-parameters" />
       <module name="leyou-sms-service" options="-parameters" />
