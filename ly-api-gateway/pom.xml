@@ -22,10 +22,7 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.leyou.common</groupId>
-            <artifactId>leyou-common</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>com.leyou.auth</groupId>
             <artifactId>leyou-auth-common</artifactId>
