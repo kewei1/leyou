@@ -3,6 +3,7 @@ package com.leyou.item.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.leyou.common.pojo.PageResult;
+import com.leyou.item.dto.CartDto;
 import com.leyou.item.mapper.*;
 import com.leyou.item.po.SpuBo;
 import com.leyou.item.pojo.*;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -191,6 +193,21 @@ public class GoodsService {
 
     public Sku querySkuById(Long id) {
         return this.skuMapper.selectByPrimaryKey(id);
+    }
+
+    public List<Sku> querySkusByIds(ArrayList<Long> ids) {
+
+        return skuMapper.selectByIdList(ids);
+    }
+
+    @Transactional
+    public void decreaseStock(List<CartDto> cartDtos) {
+        for (CartDto cartDto : cartDtos) {
+            int count = stockMapper.decreaseStock(cartDto.getSkuId(), cartDto.getNum());
+            if (count != 1) {
+                //throw new LyException(ExceptionEnum.STOCK_NOT_ENOUGH);
+            }
+        }
     }
 }
 

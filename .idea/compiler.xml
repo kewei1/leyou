@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="lyiteminterface" />
         <module name="leyou-auth-common" />
+        <module name="ly-order" />
         <module name="leyou-goods-web" />
         <module name="leyou-search" />
         <module name="leyou-auth-service" />
@@ -23,6 +24,11 @@
         <module name="lyapigateway" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="leyou-order" target="1.8" />
+      <module name="leyou-order-interface" target="1.8" />
+      <module name="leyou-order-service" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
@@ -31,10 +37,13 @@
       <module name="leyou-auth-service" options="-parameters" />
       <module name="leyou-cart" options="-parameters" />
       <module name="leyou-goods-web" options="-parameters" />
+      <module name="leyou-order-interface" options="-parameters" />
+      <module name="leyou-order-service" options="-parameters" />
       <module name="leyou-search" options="-parameters" />
       <module name="leyou-sms-service" options="-parameters" />
       <module name="leyou-user-interface" options="-parameters" />
       <module name="leyou-user-service" options="-parameters" />
+      <module name="ly-order" options="-parameters" />
       <module name="lyapigateway" options="-parameters" />
       <module name="lycommon" options="-parameters" />
       <module name="lyitem" options="-parameters" />

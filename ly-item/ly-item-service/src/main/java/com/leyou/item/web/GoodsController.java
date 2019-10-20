@@ -1,6 +1,7 @@
 package com.leyou.item.web;
 
 import com.leyou.common.pojo.PageResult;
+import com.leyou.item.dto.CartDto;
 import com.leyou.item.po.SpuBo;
 import com.leyou.item.pojo.Sku;
 import com.leyou.item.pojo.Spu;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -106,6 +108,17 @@ public class GoodsController {
         return ResponseEntity.ok(sku);
     }
 
+    @GetMapping("Listsku/{ids}")
+    public ResponseEntity<List<Sku>> querySkusByIds(@PathVariable("ids") ArrayList<Long> ids){
 
+        List<Sku> skus = this.goodsService.querySkusByIds(ids);
+
+        return ResponseEntity.ok(skus);
+
+    }
+    @PutMapping("Listsku/{ids}")
+    public void decreaseStock(@PathVariable("cartDtos")List<CartDto> cartDtos){
+        goodsService.decreaseStock(cartDtos);
+    }
 
 }
