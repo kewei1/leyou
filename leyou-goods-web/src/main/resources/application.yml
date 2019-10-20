@@ -10,10 +10,6 @@ spring:
     virtual-host: /leyou
   thymeleaf:
     cache: false
-  datasource:
-    url: jdbc:mysql://localhost:3306/yun6
-    username: root
-    password: 116184
 eureka:
   client:
     service-url:
