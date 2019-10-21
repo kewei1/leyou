@@ -8,7 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="lyiteminterface" />
-        <module name="leyou-auth-common" />
+        <module name="lyitemservice" />
         <module name="ly-order" />
         <module name="leyou-goods-web" />
         <module name="leyou-search" />
@@ -16,11 +16,11 @@
         <module name="lycommon" />
         <module name="leyou-user-service" />
         <module name="lyupload" />
-        <module name="lyitemservice" />
+        <module name="leyou-cart" />
+        <module name="leyou-auth-common" />
         <module name="leyou-sms-service" />
         <module name="lyregistry" />
         <module name="leyou-user-interface" />
-        <module name="leyou-cart" />
         <module name="lyapigateway" />
       </profile>
     </annotationProcessing>

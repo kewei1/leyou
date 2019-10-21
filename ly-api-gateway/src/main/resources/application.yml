@@ -12,12 +12,17 @@ zuul:
   prefix: /api # 添加路由前缀
   retryable: true
   routes:
-
     ly-item-service: /item/** # 商品微服务的映射路径
     leyou-goods-web: /item/** # 详情页微服务的映射路径
     search-service: /search/**  # 搜索微服务
     user-service: /user/** # 用户微服务
     auth-service: /auth/** # 授权中心微服务
+    order-service: /** # 订单微服务
+    cart-service:
+      path: /**
+      serviceId: cart-service
+      strip-prefix: false
+
     upload-service:    # 上传微服务
       path: /upload/**
       serviceId: upload-service
