@@ -15,7 +15,7 @@
 
 ### 三，技术选型
 
-##前端技术：
+## 前端技术：
 
 基础的HTML，CSS，JavaScript的（基于ES6标准）
 
@@ -37,7 +37,7 @@ AJAX框架：爱可信
 
 
 
-##后端技术：
+## 后端技术：
 
 基础的SpringMVC、Spring 5.0和MyBatis3
 
